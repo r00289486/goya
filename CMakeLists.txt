@@ -15,4 +15,3 @@ target_sources(fs_client
     "${PROJECT_SOURCE_DIR}/src/client/fs_client.cc"
 )
 
-#add_library(gaya "")
