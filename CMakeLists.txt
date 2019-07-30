@@ -12,7 +12,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 add_executable(fs_client "")
 target_sources(fs_client
   PRIVATE 
-    "${PROJECT_SOURCE_DIR}/client/fs_client.cc"
+    "${PROJECT_SOURCE_DIR}/src/client/fs_client.cc"
 )
 
 #add_library(gaya "")
