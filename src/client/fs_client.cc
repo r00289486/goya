@@ -1,52 +1,95 @@
 #include <string>
+#include <string.h>
+#include "sdk/file_client_impl.h"
 
-class FSinterface {
+using namespace goya::fs;
+
+void print_usage() {
+  printf("Use:\nfs_client <commond> path\n");
+  printf("\t commond:\n");
+  printf("\t    -mkdir <path> : make director\n");
+  printf("\t    -ls <path> : list the directory\n");
+}
+
+void dump(int argc, char** argv) {
+  printf("dump\n");
+  for (int i = 0; i < argc; ++i) {
+    printf("arg[%d]=%s\n", i, argv[i]);
+  }
+}
+
+class FSOperator {
 public:
-  virtual void Execute() = 0;
+  FSOperator(int argc, char* argv[]) : argc_(argc), argv_(argv) {}
+  virtual ~FSOperator() {}
+  virtual int Execute() = 0;
+  FileSystemImpl fs_;
+
+protected:
+  int argc_;
+  char** argv_;
 };
 
-class FSmkdir : public FSinterface {
+class FSMkdirImpl : public FSOperator {
 public:
-  virtual void Execute() {
+  FSMkdirImpl(int argc, char* argv[]) : FSOperator(argc, argv) {}
+  virtual ~FSMkdirImpl() {}
+  
+  int Execute() {
+    if (argc_ < 3) {
+      print_usage();
+      return -1;
+    }
+    int ret = 0;
+    for (int i = 2; i < argc_; ++i) {
+      ret |= fs_.CreateDirectory(argv_[i]);
+      if (0 != ret) {
+        fprintf(stderr, "Create diretory %s fail\n", argv_[i]);
+      }
+    }
 
+    return ret;
   }
 };
 
-class FSlsdir : public FSinterface {
+class FSLsdirImpl : public FSOperator {
 public:
-  virtual void Execute() {
+  FSLsdirImpl(int argc, char* argv[]) : FSOperator(argc, argv) {}
+  virtual ~FSLsdirImpl() {}
+  
+  int Execute() {
+    
   }
 };
 
 class FSCmdFactory {
 public:
-  FSCmdFactory(int argc, char* argv[]) : opcode_(argv[1]) {}
-  void CreateOpObject() {
-    if (opcode_ == "mkdir") {
-      fs_ = new FSmkdir();
-      printf("mkdir\n");
-    }
-    else if (opcode_ == "ls") {
-      fs_ = new FSlsdir();
-      printf("ls\n");
-    }
-    else {
-      //print_usage();
-    }
-  }
+  FSCmdFactory() {}
+  virtual ~FSCmdFactory() {}
   
-  void Execute() {
-    fs_->Execute();
+  FSOperator* CreateOpObject(int argc, char* argv[]) {
+    if (0 == strcmp(argv[1], "mkdir")) {
+      operator_ = new FSMkdirImpl(argc, argv);
+    } else if (0 == strcmp(argv[1], "ls")) {
+      operator_ = new FSLsdirImpl(argc, argv);
+    } else {
+      printf("Unknow common: %s\n", argv[1]);
+      return nullptr;
+    }
+    return operator_;
   }
 
 private:
-  FSinterface *fs_;
-  std::string opcode_;
+  FSOperator* operator_;
 };
 
 int main(int argc, char* argv[]) {
-  FSCmdFactory* instance = new FSCmdFactory(argc, argv);
-  instance->CreateOpObject();
-  instance->Execute();
+  FSCmdFactory* factory = new FSCmdFactory();
+  FSOperator* opertator = factory->CreateOpObject(argc, argv);
+  if (!opertator) {
+    fprintf(stderr, "create opertator object fail\n");
+    return -1;
+  }
+  opertator->Execute();
 }
 

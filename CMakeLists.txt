@@ -9,9 +9,23 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+include_directories(
+  "${PROJECT_SOURCE_DIR}/src"
+)
+
 add_executable(fs_client "")
 target_sources(fs_client
   PRIVATE 
     "${PROJECT_SOURCE_DIR}/src/client/fs_client.cc"
 )
+
+add_library(goya "")
+target_sources(goya
+  PRIVATE
+    "${PROJECT_SOURCE_DIR}/src/sdk/file_client.h"
+    "${PROJECT_SOURCE_DIR}/src/sdk/file_client_impl.h"
+    "${PROJECT_SOURCE_DIR}/src/sdk/file_client_impl.cc"
+)
+
+target_link_libraries(fs_client goya)
 
