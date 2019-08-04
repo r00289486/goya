@@ -22,6 +22,7 @@ class FileSystem {
 public:
   FileSystem() {}
   virtual ~FileSystem() {}
+  virtual bool StartFileSystem(const char* masterserver) = 0;
   virtual int CreateDirectory(char* path) = 0;
   virtual int ListDirectory(char* path) = 0;
 

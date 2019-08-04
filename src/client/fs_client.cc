@@ -4,6 +4,8 @@
 
 using namespace goya::fs;
 
+extern std::string FLAGS_masterserver;
+
 void print_usage() {
   printf("Use:\nfs_client <commond> path\n");
   printf("\t commond:\n");
@@ -22,12 +24,16 @@ class FSOperator {
 public:
   FSOperator(int argc, char* argv[]) : argc_(argc), argv_(argv) {}
   virtual ~FSOperator() {}
+  
+  virtual bool Start(const char* masterserver) {
+    return fs_.StartFileSystem(masterserver);
+  }
   virtual int Execute() = 0;
-  FileSystemImpl fs_;
-
+  
 protected:
-  int argc_;
-  char** argv_;
+  int             argc_;
+  char**          argv_;  
+  FileSystemImpl  fs_;
 };
 
 class FSMkdirImpl : public FSOperator {
@@ -90,6 +96,11 @@ int main(int argc, char* argv[]) {
     fprintf(stderr, "create opertator object fail\n");
     return -1;
   }
+
+  // 1. start prepare resource
+  opertator->Start(FLAGS_masterserver.c_str());
+  
+  // 2. execte
   opertator->Execute();
 }
 

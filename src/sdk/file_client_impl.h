@@ -1,8 +1,11 @@
 #ifndef _FILE_CLIENT_IMPL_H_
 #define _FILE_CLIENT_IMPL_H_
 
+#include <string>
 #include <sys/types.h>
 #include "file_client.h"
+#include "masterserver.pb.h"
+#include "common/rpc_wrapper.h"
 
 namespace goya {
 
@@ -16,8 +19,16 @@ public:
 
 class FileSystemImpl : public FileSystem {
 public:
-  virtual int CreateDirectory(char* path);
-  virtual int ListDirectory(char* path);
+  FileSystemImpl();
+  virtual ~FileSystemImpl();
+  bool StartFileSystem(const char* masterserver);
+  int CreateDirectory(char* path);
+  int ListDirectory(char* path);
+  
+private:
+  std::string         masterserver_addr_;
+  MasterServer_Stub*  masterserver_stub_;
+  RpcWrapper*         rpc_wrapper_;
 };
 
 }
