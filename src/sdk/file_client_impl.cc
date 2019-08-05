@@ -27,9 +27,8 @@ FileSystemImpl::~FileSystemImpl() {
 }
 
 bool FileSystemImpl::StartFileSystem(const char* masterserver) {
-  if (masterserver == nullptr)
-    masterserver_addr_ = FLAGS_masterserver;
-  else
+  masterserver_addr_ = FLAGS_masterserver;
+  if (nullptr != masterserver)
     masterserver_addr_ = masterserver;
 
   rpc_wrapper_ = new RpcWrapper();
@@ -43,7 +42,6 @@ int FileSystemImpl::CreateDirectory(char* path) {
   CreateFileRequest  request;
   CreateFileResponse response;
   request.set_sequence_id(0);
-  request.set_type(0755);
   request.set_file_name(path);
   /*bool ret = rpc_client_->SendRequest(nameserver_stub_, &NameServer_Stub::CreateFile,
             &request, &response, 5, 3);

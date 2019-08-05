@@ -36,6 +36,8 @@ set(CMAKE_PREFIX_PATH ${PROJECT_SOURCE_DIR}/thirdparty/install)
 message(STATUS "*****cmake prefix: " ${CMAKE_PREFIX_PATH})
 
 find_package(Protobuf REQUIRED)
+
+# ${PROTOBUF_INCLUDE_DIRS}已经把install安装的第三方的头文件给全部包含
 include_directories(${PROTOBUF_INCLUDE_DIRS})
 include_directories(${PROJECT_BINARY_DIR})
 
@@ -88,5 +90,5 @@ target_sources(fs_client
     "${PROJECT_SOURCE_DIR}/src/client/fs_client.cc"
     "${PROJECT_SOURCE_DIR}/src/common/flags.cc"
 )
-target_link_libraries(fs_client goya ${PROTOBUF_LIBRARIES})
+target_link_libraries(fs_client goya sofa-pbrpc z snappy ${PROTOBUF_LIBRARIES})
 
