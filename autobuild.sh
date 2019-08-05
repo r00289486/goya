@@ -20,9 +20,23 @@ if [ ! -f "${DEPS_PREFIX}/lib/libprotobuf.a" ] \
   ./autogen.sh
   ./configure --prefix=${DEPS_PREFIX}/
   make -j4 && make check
-  sudo make install
+  make install
   cd -
   rm v3.9.0
+fi
+popd
+
+# 2.leveldb
+pushd $DEPS
+if [ ! -f "${DEPS_PREFIX}/lib/libleveldb.a" ] \
+  || [ ! -d "${DEPS_PREFIX}/include/leveldb" ]; then
+  rm -rf leveldb
+  git clone https://github.com/r00289486/leveldb.git 
+  cd leveldb
+  echo "PREFIX=${DEPS_PREFIX}" > config.mk
+  make -j4
+  make install
+  cd -
 fi
 popd
 

@@ -10,6 +10,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 include_directories(src)
+link_directories(${PROJECT_SOURCE_DIR}/thirdparty/install/lib)
 
 add_library(goya "")
 target_sources(goya
@@ -19,9 +20,9 @@ target_sources(goya
     "${PROJECT_SOURCE_DIR}/src/sdk/file_client_impl.cc"
     "${PROJECT_SOURCE_DIR}/src/common/flags.cc"
     "${PROJECT_SOURCE_DIR}/build/masterserver.pb.cc"
-	"${PROJECT_SOURCE_DIR}/build/masterserver.pb.h"
-	"${PROJECT_SOURCE_DIR}/build/chunkserver.pb.cc"
-	"${PROJECT_SOURCE_DIR}/build/chunkserver.pb.h"
+    "${PROJECT_SOURCE_DIR}/build/masterserver.pb.h"
+    "${PROJECT_SOURCE_DIR}/build/chunkserver.pb.cc"
+    "${PROJECT_SOURCE_DIR}/build/chunkserver.pb.h"
 )
 #target_link_libraries(goya ${PROTOBUF_LIBRARIES})
 
@@ -49,10 +50,10 @@ message(STATUS ${PROTOSRCS}, ${PROTOHDRS})
 add_library(proto "")
 target_sources(proto
   PRIVATE
-  "${PROJECT_SOURCE_DIR}/build/masterserver.pb.cc"
-  "${PROJECT_SOURCE_DIR}/build/masterserver.pb.h"
-  "${PROJECT_SOURCE_DIR}/build/chunkserver.pb.cc"
-  "${PROJECT_SOURCE_DIR}/build/chunkserver.pb.h"
+    "${PROJECT_SOURCE_DIR}/build/masterserver.pb.cc"
+    "${PROJECT_SOURCE_DIR}/build/masterserver.pb.h"
+    "${PROJECT_SOURCE_DIR}/build/chunkserver.pb.cc"
+    "${PROJECT_SOURCE_DIR}/build/chunkserver.pb.h"
 )
 
 # master server
@@ -63,9 +64,11 @@ target_sources(masterserver
     "${PROJECT_SOURCE_DIR}/src/master/masterserver_impl.cc"
     "${PROJECT_SOURCE_DIR}/src/master/masterserver_impl.h"
     "${PROJECT_SOURCE_DIR}/build/masterserver.pb.cc"
-  	"${PROJECT_SOURCE_DIR}/build/masterserver.pb.h"
+    "${PROJECT_SOURCE_DIR}/build/masterserver.pb.h"
+    "${PROJECT_SOURCE_DIR}/src/common/flags.cc"
 )
-target_link_libraries(masterserver ${PROTOBUF_LIBRARIES})
+target_link_libraries(masterserver ${PROTOBUF_LIBRARIES} leveldb)
+message(STATUS "*****protobuf libs: " ${PROTOBUF_LIBRARIES})
 
 # chunk server
 add_executable(chunkserver "")
@@ -75,7 +78,7 @@ target_sources(chunkserver
     "${PROJECT_SOURCE_DIR}/src/chunkserver/chunkserver_impl.cc"
     "${PROJECT_SOURCE_DIR}/src/chunkserver/chunkserver_impl.h"
     "${PROJECT_SOURCE_DIR}/build/chunkserver.pb.cc"
-  	"${PROJECT_SOURCE_DIR}/build/chunkserver.pb.h"
+    "${PROJECT_SOURCE_DIR}/build/chunkserver.pb.h"
 )
 target_link_libraries(chunkserver ${PROTOBUF_LIBRARIES})
 
