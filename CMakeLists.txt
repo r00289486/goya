@@ -69,7 +69,7 @@ target_sources(masterserver
     "${PROJECT_SOURCE_DIR}/build/masterserver.pb.h"
     "${PROJECT_SOURCE_DIR}/src/common/flags.cc"
 )
-target_link_libraries(masterserver ${PROTOBUF_LIBRARIES} leveldb)
+target_link_libraries(masterserver ${PROTOBUF_LIBRARIES} leveldb sofa-pbrpc z snappy) 
 message(STATUS "*****protobuf libs: " ${PROTOBUF_LIBRARIES})
 
 # chunk server

@@ -38,16 +38,18 @@ bool FileSystemImpl::StartFileSystem(const char* masterserver) {
 }
 
 int FileSystemImpl::CreateDirectory(char* path) {
-  printf("Create Directory %s\n", path);
+  printf("Create directory %s\n", path);
   CreateFileRequest  request;
   CreateFileResponse response;
   request.set_sequence_id(0);
   request.set_file_name(path);
-  /*bool ret = rpc_client_->SendRequest(nameserver_stub_, &NameServer_Stub::CreateFile,
+  bool ret = rpc_wrapper_->SendRequest(masterserver_stub_, &MasterServer_Stub::CreateFile,
             &request, &response, 5, 3);
-  if (!ret || response.status() != 0)
+  if (!ret || response.status() != 0) {
+    printf("Create directory fail\n");
     return -1;
-  */
+  }
+  
   return 0;
 }
 

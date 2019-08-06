@@ -24,6 +24,7 @@ void MasterServerImpl::CreateFile(google::protobuf::RpcController* controller,
                               const ::goya::fs::CreateFileRequest* request,
                               goya::fs::CreateFileResponse* response,
                               google::protobuf::Closure* done) {
+  printf("master create file\n");
   response->set_sequence_id(request->sequence_id());
   const std::string& filename = request->file_name();
 
